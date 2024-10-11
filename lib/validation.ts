@@ -6,5 +6,5 @@ export const UserFormValidation = z.object({
     .min(2, { message: 'Username must be at least 2 characters.' })
     .max(50, { message: 'Username must be at most 50 characters.' }),
     email: z.string().email('Invalid Email Address!'),
-    phone: z.string().refine((phone) => /^\+?[1-9]\d{1,14}$/.test(phone), 'Invalid phone number'),
+    phone: z.string().refine((phone) => (/^\+?[1-9]\d{1,14}$/.test(phone)), 'Invalid phone number'),
 });

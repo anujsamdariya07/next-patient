@@ -1,9 +1,9 @@
-"use client"
- 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { Button } from "@/components/ui/button"
+'use client';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -12,14 +12,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import CustomFormField from "../CustomFormField"
-import SubmitButton from "../SubmitButton"
-import { useState } from "react"
-import { UserFormValidation } from "@/lib/validation"
-import { useRouter } from "next/navigation"
- 
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import CustomFormField from '../CustomFormField';
+import SubmitButton from '../SubmitButton';
+import { useState } from 'react';
+import { UserFormValidation } from '@/lib/validation';
+import { createUser } from '@/lib/actions/patient.actions';
+import { useRouter } from 'next/navigation';
+
 export enum FormFieldType {
   INPUT = 'input',
   TEXTAREA = 'textarea',
@@ -31,30 +32,39 @@ export enum FormFieldType {
 }
 
 const PatientForm = () => {
-  const router = useRouter()
-  
-  const [isLoading, setIsLoading] = useState(false)
-  
+  const router = useRouter();
+
+  const [isLoading, setIsLoading] = useState(false);
+
   const form = useForm<z.infer<typeof UserFormValidation>>({
     resolver: zodResolver(UserFormValidation),
     defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
+      name: '',
+      email: '',
+      phone: '',
     },
-  })
+  });
 
-  async function onSubmit({name, email, phone}: z.infer<typeof UserFormValidation>) {
-    setIsLoading(true)
+  const onSubmit = async ({
+    name,
+    email,
+    phone,
+  }: z.infer<typeof UserFormValidation>) => {
+    setIsLoading(true);
 
     try {
       const userData = { name, email, phone };
 
-      // const user = await createUser(userData)
+      const user = await createUser(userData);
+      console.log(userData, user);
 
-      // if (user) router.push(`/patients/${user.$id}/register`)
+      if (user) {
+        router.push(`/patients/${user.$id}/register`);
+      }
+
+      console.log('Submitting...');
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 
@@ -101,6 +111,6 @@ const PatientForm = () => {
       </form>
     </Form>
   );
-}
+};
 
-export default PatientForm
+export default PatientForm;
