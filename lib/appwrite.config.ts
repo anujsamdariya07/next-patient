@@ -15,7 +15,7 @@ export const {
 const client = new sdk.Client();
 
 client
-  .setEndpoint('https://cloud.appwrite.io/v1')
+  .setEndpoint(ENDPOINT!)
   .setProject(PROJECT_ID!)
   .setKey(API_KEY!)
 
