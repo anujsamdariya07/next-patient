@@ -1,4 +1,4 @@
-'use server'
+'use server';
 
 import { ID } from 'node-appwrite';
 import {
@@ -23,5 +23,21 @@ export const createAppointment = async (
     );
 
     return parseStringify(newAppointment);
-  } catch (error) {}
+  } catch (error) {
+    console.log('🙀ERROR: ', error);
+  }
+};
+
+export const getAppointment = async (appointmentId: string) => {
+  try {
+    const appointment = await databases.getDocument(
+      DATABASE_ID!,
+      APPOINTMENT_COLLECTION_ID!,
+      appointmentId
+    );
+
+    return parseStringify(appointment);
+  } catch (error) {
+    console.log('🙀ERROR: ', error);
+  }
 };
