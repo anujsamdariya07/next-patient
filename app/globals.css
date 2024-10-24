@@ -6,6 +6,19 @@
   display: none;
 }
 
+/* For selected text */
+::selection {
+  color: rgb(0, 255, 0);
+  background: rgb(0, 34, 0);
+}
+
+/* Removing selection from Images */
+img, button {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+
 /* ========================================== TAILWIND STYLES */
 @layer base {
   /* Remove scrollbar */

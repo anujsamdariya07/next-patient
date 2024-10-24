@@ -35,13 +35,24 @@ export const createUser = async (user: CreateUserParams) => {
 // For getting the already logged in user
 export const getUser = async (userId: string) => {
   try {
-    console.log('TOTAL USERS: ', users)
-    
     const user = await users.get(userId)
 
-    console.log('USEr ACTION: ', user)
-
     return parseStringify(user)
+  } catch (error: any) {
+    console.log('An error has occurred!', error)
+  }
+}
+
+// For getting the registered patient
+export const getPatient = async (userId: string) => {
+  try {
+    const patients = await databases.listDocuments(
+      DATABASE_ID!,
+      PATIENT_COLLECTION_ID!,
+      [Query.equal('userId', userId)]
+    )
+
+    return parseStringify(patients.documents[0]);
   } catch (error: any) {
     console.log('An error has occurred!', error)
   }
@@ -76,9 +87,6 @@ export const registerPatient = async ({identificationDocument, ...patient}: Regi
         ...patient,
       }
     );
-
-
-    console.log('3333')
 
     return parseStringify(newPatient)
   } catch (error) {

@@ -36,6 +36,7 @@ interface CustomProps {
   showTimeSelect?: boolean;
   children?: React.ReactNode;
   renderSkeleton?: (field: any) => React.ReactNode;
+  defaultValue?: string;
 }
 
 // Functional component for rendering all kinds of input
