@@ -7,9 +7,10 @@ import {
   DATABASE_ID,
   databases,
   ENDPOINT,
+  messaging,
   PROJECT_ID,
 } from '../appwrite.config';
-import { parseStringify } from '../utils';
+import { formatDateTime, parseStringify } from '../utils';
 import { Appointment, Patient } from '@/types/appwrite.types';
 import { revalidatePath } from 'next/cache';
 
@@ -18,7 +19,7 @@ type UpdateAppointmentParams = {
   userId: string;
   appointment: Appointment;
   type: string;
-}
+};
 
 export const createAppointment = async (
   appointmentData: CreateAppointmentParams
@@ -63,19 +64,22 @@ export const getRecentAppointments = async () => {
       scheduledCount: 0,
       cancelledCount: 0,
       pendingCount: 0,
-    }
+    };
 
-    const counts = (appointments.documents as Appointment[]).reduce((acc, appointment) => {
-      if (appointment.status === 'scheduled') {
-        acc.scheduledCount += 1;
-      } else if (appointment.status === 'cancelled') {
-        acc.cancelledCount += 1;
-      } else if (appointment.status === 'pending') {
-        acc.pendingCount += 1;
-      }
+    const counts = (appointments.documents as Appointment[]).reduce(
+      (acc, appointment) => {
+        if (appointment.status === 'scheduled') {
+          acc.scheduledCount += 1;
+        } else if (appointment.status === 'cancelled') {
+          acc.cancelledCount += 1;
+        } else if (appointment.status === 'pending') {
+          acc.pendingCount += 1;
+        }
 
-      return acc
-    }, initialCounts)
+        return acc;
+      },
+      initialCounts
+    );
 
     const data = {
       totalCount: appointments.total,
@@ -83,11 +87,11 @@ export const getRecentAppointments = async () => {
       documents: appointments.documents,
     };
 
-    return parseStringify(data)
+    return parseStringify(data);
   } catch (error) {
     console.log('🙀ERROR: ', error);
   }
-}
+};
 
 export const updateAppointment = async ({
   appointmentId,
@@ -118,10 +122,43 @@ export const updateAppointment = async ({
     }
 
     // TODO: Send SMS Notification
+    const smsMessage = `
+    Hi, it's NextPatient. 
+    ${
+      type === 'schedule'
+        ? `
+      Your appointment with ${appointment.primaryPhysician} has been scheduled on 
+      ` +
+          formatDateTime(appointment.schedule) +
+          `🎊🥳`
+        : `We regret to inform you that your appointment with ${appointment.primaryPhysician} has been cancelled 😞 for the following reason🧐:
+        \n
+        ${appointment.cancellationReason}
+      Thanks for requesting an appointment.🙏
+      You can again request an appointment according to your convinience.`
+    }
+    `;
+
+    await sendSMSNotification(userId, smsMessage)
 
     revalidatePath('/admin');
 
     return parseStringify(updatedAppointment);
+  } catch (error) {
+    console.log('🙀ERROR: ', error);
+  }
+};
+
+export const sendSMSNotification = async (userId: string, content: string) => {
+  try {
+    const message = await messaging.createSms(
+      ID.unique(),
+      content,
+      [],
+      [userId]
+    );
+
+    return parseStringify(message);
   } catch (error) {
     console.log('🙀ERROR: ', error);
   }

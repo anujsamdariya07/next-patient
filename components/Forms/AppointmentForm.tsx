@@ -26,6 +26,7 @@ import { SelectItem } from '../ui/select';
 import Image from 'next/image';
 import { createAppointment, updateAppointment } from '@/lib/actions/appointment.actions';
 import { Appointment } from '@/types/appwrite.types';
+import { sendSmsToPatient } from '@/lib/actions/appointment.actions';
 
 const AppointmentForm = ({
   userId,
