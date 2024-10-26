@@ -24,16 +24,21 @@ import { FormFieldType } from './PatientForm';
 import { Doctors } from '@/constants';
 import { SelectItem } from '../ui/select';
 import Image from 'next/image';
-import { createAppointment } from '@/lib/actions/appointment.actions';
+import { createAppointment, updateAppointment } from '@/lib/actions/appointment.actions';
+import { Appointment } from '@/types/appwrite.types';
 
 const AppointmentForm = ({
   userId,
   type,
   patientId,
+  appointment,
+  setOpen,
 }: {
   userId: string;
   type: 'cancel' | 'create' | 'schedule';
   patientId: string;
+  appointment?: Appointment;
+  setOpen: (open: boolean) => void;
 }) => {
   const router = useRouter();
 
@@ -61,17 +66,21 @@ const AppointmentForm = ({
   const form = useForm<z.infer<typeof AppointmentFormValidation>>({
     resolver: zodResolver(AppointmentFormValidation),
     defaultValues: {
-      primaryPhysician: '',
-      schedule: new Date(),
-      reason: '',
-      note: '',
-      cancellationReason: '',
+      primaryPhysician: appointment ? appointment.primaryPhysician: '',
+      schedule: appointment ? new Date(appointment.schedule): new Date(Date.now()),
+      reason: appointment ? appointment.reason: '',
+      // ERROR: Not able to schedule the pending ones but by remving the ternary operator below in note and cancellationReason fixed it
+      note: appointment?.note || '',
+      cancellationReason: appointment?.cancellationReason! || '',
     },
   });
-
+  
   const onSubmit = async (
     values: z.infer<typeof AppointmentFormValidation>
   ) => {
+    console.log('ONSUBMIT called, type:', type);
+    console.log('Form values:', values);
+    
     setIsLoading(true);
 
     let status;
@@ -114,11 +123,36 @@ const AppointmentForm = ({
             `/patients/${userId}/new-appointment/success?appointmentId=${appointment.$id}`
           );
         }
+      } else {
+        const appointmentToUpdate = {
+          userId,
+          appointmentId: appointment?.$id!,
+          appointment: {
+            primaryPhysician: values?.primaryPhysician!,
+            schedule: new Date(values?.schedule),
+            status: status as Status,
+            cancellationReason: type === 'cancel' ? values?.cancellationReason : undefined,
+          },
+          type,
+        };
+  
+        const updatedAppointment = await updateAppointment(appointmentToUpdate);
+        console.log('UP: ', updatedAppointment)
+  
+        if (updatedAppointment) {
+          setOpen && setOpen(false)
+          form.reset()
+        } else {
+          console.log('Hello')
+        }
       }
     } catch (error) {
       console.log(error);
     }
   };
+
+  console.log('Rendering form, type:', type);
+  console.log('Form values:', form.getValues());
 
   return (
     <Form {...form}>
@@ -126,12 +160,12 @@ const AppointmentForm = ({
         onSubmit={form.handleSubmit(onSubmit)}
         className='space-y-8 text-white flex-1'
       >
-        <section className='mb-12 space-y-4'>
+        {type === 'create' && (<section className='mb-12 space-y-4'>
           <h1 className='header'>New Appointment🆕</h1>
           <p className='text-dark-700'>
             Request a new appointment in 10 seconds
           </p>
-        </section>
+        </section>)}
 
         {type !== 'cancel' && (
           <>
