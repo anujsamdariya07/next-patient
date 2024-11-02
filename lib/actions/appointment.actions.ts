@@ -122,24 +122,24 @@ export const updateAppointment = async ({
     }
 
     // TODO: Send SMS Notification
-    const smsMessage = `
-    Hi, it's NextPatient. 
-    ${
-      type === 'schedule'
-        ? `
-      Your appointment with ${appointment.primaryPhysician} has been scheduled on 
-      ` +
-          formatDateTime(appointment.schedule) +
-          `🎊🥳`
-        : `We regret to inform you that your appointment with ${appointment.primaryPhysician} has been cancelled 😞 for the following reason🧐:
-        \n
-        ${appointment.cancellationReason}
-      Thanks for requesting an appointment.🙏
-      You can again request an appointment according to your convinience.`
-    }
-    `;
+    // const smsMessage = `
+    // Hi, it's NextPatient. 
+    // ${
+    //   type === 'schedule'
+    //     ? `
+    //   Your appointment with ${appointment.primaryPhysician} has been scheduled on 
+    //   ` +
+    //       formatDateTime(appointment.schedule) +
+    //       `🎊🥳`
+    //     : `We regret to inform you that your appointment with ${appointment.primaryPhysician} has been cancelled 😞 for the following reason🧐:
+    //     \n
+    //     ${appointment.cancellationReason}
+    //   Thanks for requesting an appointment.🙏
+    //   You can again request an appointment according to your convinience.`
+    // }
+    // `;
 
-    await sendSMSNotification(userId, smsMessage)
+    // await sendSMSNotification(userId, smsMessage)
 
     revalidatePath('/admin');
 

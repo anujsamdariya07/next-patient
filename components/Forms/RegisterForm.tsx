@@ -71,6 +71,8 @@ const RegisterForm = ({ user }: { user: User }) => {
         identificationDocument: formData
       };
 
+      // const {  } = patientData
+
       console.log('PATIENT HERE: ', patientData)
       console.log('USER: ', user)
       

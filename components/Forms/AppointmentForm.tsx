@@ -26,7 +26,6 @@ import { SelectItem } from '../ui/select';
 import Image from 'next/image';
 import { createAppointment, updateAppointment } from '@/lib/actions/appointment.actions';
 import { Appointment } from '@/types/appwrite.types';
-import { sendSmsToPatient } from '@/lib/actions/appointment.actions';
 
 const AppointmentForm = ({
   userId,
@@ -39,7 +38,7 @@ const AppointmentForm = ({
   type: 'cancel' | 'create' | 'schedule';
   patientId: string;
   appointment?: Appointment;
-  setOpen: (open: boolean) => void;
+  setOpen?: (open: boolean) => void;
 }) => {
   const router = useRouter();
 

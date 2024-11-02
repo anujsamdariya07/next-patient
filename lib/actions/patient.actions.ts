@@ -75,7 +75,7 @@ export const registerPatient = async ({identificationDocument, ...patient}: Regi
     }
     
     console.log('22222')
-    console.log('PATIENT: ', patient)
+    console.log('PATIENT HERE: ', patient)
 
     const newPatient = await databases.createDocument(
       DATABASE_ID!,

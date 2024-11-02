@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import { columns } from '@/components/table/columns';
+import { Button } from '@/components/ui/button';
 
 
 const Admin = async () => {
@@ -28,11 +29,27 @@ const Admin = async () => {
       </header>
 
       <main className='admin-main'>
-        <section className='w-full space-y-4'>
-          <h1 className='header'>Welcome👋</h1>
-          <p className='text-dark-700'>
-            Start the day with managing new appointments
-          </p>
+        <section className='w-full space-y-4 flex justify-between'>
+          <div>
+            <h1 className='header'>Welcome👋</h1>
+            <p className='text-dark-700'>
+              Start the day with managing new appointments
+            </p>
+          </div>
+          <div>
+            <Link 
+              href={'/admin/manage-doctors'}
+              className='bg-green-500 text-white p-2 rounded flex gap-2'
+            >
+              Manage Doctors
+              <Image
+                src={'/assets/images/manage-doctors.png'}
+                alt='manage-logo'
+                width={24}
+                height={24}
+              />
+            </Link>
+          </div>
         </section>
 
         <section className='admin-stat'>
